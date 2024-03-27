@@ -3,7 +3,7 @@ const express = require("express");
 
 // Creating an instance of express
 const app = express();
-const port = 3000; // Port on which the server will run
+const port = 4000; // Port on which the server will run
 
 // Middleware to log request method and URL
 app.use((req, res, next) => {
