@@ -1,12 +1,14 @@
 pipeline {
   agent any
-    stages {
-        stage('Build') {
-            steps {
-                git 'https://github.com/aeff60/simple-express-app.git'
-                bat "npm install"
-            }
-        }
+
+  stages {
+    stage('Build') {
+      steps {
+        git 'https://github.com/aeff60/simple-express-app.git'
+        sh 'npm install'
+      }
+    }
+
     stage('Scan') {
       steps {
         withSonarQubeEnv(installationName: 'sq1') {
