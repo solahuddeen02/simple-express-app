@@ -1,18 +1,18 @@
 pipeline {
-  agent { label 'windows' }
+  agent { label 'linux' }
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
   stages {
     stage('Build') {
       steps {
-        cmd /c 'npm install' // หรือ 'yarn install' ถ้าใช้ yarn
+        sh 'npm install'
       }
     }
     stage('Scan') {
       steps {
         withSonarQubeEnv(installationName: 'sq1') {
-          cmd /c 'sonar-scanner -X -Dsonar.projectKey=my-project-key -Dsonar.sources=./src'
+          sh 'sonar-scanner -X -Dsonar.projectKey=my-project-key -Dsonar.sources=./src'
         }
       }
     }
