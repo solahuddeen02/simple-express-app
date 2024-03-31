@@ -1,20 +1,22 @@
 pipeline {
-  agent any
+    agent any
 
-  stages {
-    stage('Build') {
-      steps {
-        git 'https://github.com/aeff60/simple-express-app.git'
-        bat 'npm install'
-      }
-    }
-
-    stage('Scan') {
-      steps {
-        withSonarQubeEnv(installationName: 'sq1') {
-          bat 'sonar-scanner -X -Dsonar.projectKey=my-project-key -Dsonar.sources=./src'
+    stages {
+        stage('Build') {
+            steps {
+                git 'https://github.com/atthaboon/quick-example-of-testing-in-nodejs.git'
+                bat "npm install"
+            }
         }
-      }
+        stage('Unit test') {
+            steps {
+                bat "npm test"
+            }
+            post {
+                success {
+                    junit '**/test-results.xml'
+                }
+            }
+        }
     }
-  }
 }
