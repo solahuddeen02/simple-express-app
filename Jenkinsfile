@@ -1,15 +1,10 @@
 pipeline {
     agent any
 
-    tools {
-        // กำหนด Node.js ถ้าจำเป็น
-        nodejs 'nodejs-lts'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'feature/lab', url: 'https://github.com/solahuddeen02/simple-express-app.git'
+                checkout scm
             }
         }
 
@@ -21,26 +16,18 @@ pipeline {
 
         stage('SonarQube Scan') {
             environment {
-                // ต้องตั้งค่าใน Jenkins > Manage Jenkins > Configure System
-                // เพิ่ม SonarQube server และใส่ชื่อที่นี่
-                SONARQUBE = 'MySonarQube'
+                SCANNER_HOME = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
             }
             steps {
                 withSonarQubeEnv('MySonarQube') {
-                    sh '''
-                        npx sonar-scanner \
-                          -Dsonar.projectKey=simple-express-app \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=http://<sonarqube-host>:9000 \
-                          -Dsonar.login=<your_token>
-                    '''
+                    sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=demo1"
                 }
             }
         }
 
         stage('Quality Gate') {
             steps {
-                timeout(time: 1, unit: 'MINUTES') {
+                timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
