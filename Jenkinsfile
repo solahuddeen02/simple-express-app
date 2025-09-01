@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs-lts'  // ชื่อ Node.js ใน Jenkins Global Tool Configuration
+        // กำหนด Node.js ถ้าจำเป็น
+        nodejs 'nodejs-lts'
     }
 
     stages {
@@ -12,24 +13,34 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
                 sh 'npm install'
             }
         }
 
         stage('SonarQube Scan') {
+            environment {
+                // ต้องตั้งค่าใน Jenkins > Manage Jenkins > Configure System
+                // เพิ่ม SonarQube server และใส่ชื่อที่นี่
+                SONARQUBE = 'MySonarQube'
+            }
             steps {
-                withSonarQubeEnv('sonarcube-25.8.0') {  // ชื่อ SonarQube installation
-                    sh 'npm install -g sonar-scanner'
-                    sh 'npx sonar-scanner -Dsonar.projectKey=demo1'
+                withSonarQubeEnv('MySonarQube') {
+                    sh '''
+                        npx sonar-scanner \
+                          -Dsonar.projectKey=simple-express-app \
+                          -Dsonar.sources=. \
+                          -Dsonar.host.url=http://<sonarqube-host>:9000 \
+                          -Dsonar.login=<your_token>
+                    '''
                 }
             }
         }
 
         stage('Quality Gate') {
             steps {
-                timeout(time: 5, unit: 'MINUTES') {
+                timeout(time: 1, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }

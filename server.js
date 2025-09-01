@@ -18,3 +18,11 @@ function add(a, b) {
     return a + b;
     console.log("This line is unreachable"); // Unreachable code
 }
+
+const unusedVar1 = 10;
+const unusedVar2 = 20;
+
+function sum(a, b) {
+  return a + b;
+  console.log("Unreachable"); // will never execute
+}
