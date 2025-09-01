@@ -11,7 +11,7 @@ pipeline {
 
         stage('Scan') {
             steps {
-                withSonarQubeEnv(installationName: 'sq1') {
+                withSonarQubeEnv(installationName: 'sonarcube-25.8.0') {
                     sh "npm install sonar-scanner"
                     sh 'npx sonar-scanner -X -X -Dsonar.projectKey=demo1'
                 }
