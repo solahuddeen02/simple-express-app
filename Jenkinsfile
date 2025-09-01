@@ -1,26 +1,28 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'nodejs-lts'  // ชื่อ Node.js ใน Jenkins Global Tool Configuration
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git branch: 'main', url: 'https://github.com/solahuddeen02/simple-express-app.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build') {
             steps {
                 sh 'npm install'
             }
         }
 
         stage('SonarQube Scan') {
-            environment {
-                SCANNER_HOME = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-            }
             steps {
-                withSonarQubeEnv('MySonarQube') {
-                    sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=demo1"
+                withSonarQubeEnv('sonarcube-25.8.0') {  // ชื่อ SonarQube installation
+                    sh 'npm install -g sonar-scanner'
+                    sh 'npx sonar-scanner -Dsonar.projectKey=demo1'
                 }
             }
         }
