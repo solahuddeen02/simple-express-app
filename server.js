@@ -26,3 +26,19 @@ function sum(a, b) {
   return a + b;
   console.log("Unreachable"); // will never execute
 }
+
+// ตัวแปรไม่ใช้หลายตัว
+const a1 = 1;
+const a2 = 2;
+const a3 = 3;
+
+// ฟังก์ชัน unreachable
+function test1() {
+  return 1;
+  console.log("unreachable");
+}
+
+function test2() {
+  return 2;
+  console.log("unreachable");
+}
